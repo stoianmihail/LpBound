@@ -3,18 +3,20 @@ from duckdb import DuckDBPyConnection
 from lpbound.acyclic.join_graph.vertex import Vertex
 from lpbound.acyclic.join_graph.join_graph import JoinGraph
 
+# Connection utils.
+from lpbound.utils.conn_utils import ConnectionWrapper
 
-def compute_predicate_ids(con: DuckDBPyConnection, join_graph: JoinGraph) -> None:
+def compute_predicate_ids(conn_wrapper: ConnectionWrapper, join_graph: JoinGraph) -> None:
     """
     Compute MCV and range IDs for all vertices in the join graph.
     This function modifies the vertices by setting MCVs and range IDs.
     """
     for v in join_graph.vertices.values():
-        _compute_mcv_ids(con, v)
-        _compute_range_ids(con, v)
+        _compute_mcv_ids(conn_wrapper, v)
+        _compute_range_ids(conn_wrapper, v)
 
 
-def _compute_mcv_ids(con: DuckDBPyConnection, vertex: Vertex) -> None:
+def _compute_mcv_ids(conn_wrapper: ConnectionWrapper, vertex: Vertex) -> None:
     """
     Compute MCV IDs for equality predicates in a vertex.
     This function modifies the vertex's predicates by setting their mcv_id.
@@ -31,13 +33,13 @@ def _compute_mcv_ids(con: DuckDBPyConnection, vertex: Vertex) -> None:
             raise ValueError(f"Unsupported value type: {predicate.value_type}")
 
         # There might be no MCV for this predicate
-        res: tuple[int] | None = con.execute(sql).fetchone()
+        res: tuple[int] | None = conn_wrapper.fetchone(sql)
         if res is not None:
             predicate_id = res[0]
             predicate.set_mcv_id(predicate_id)
 
 
-def _compute_range_ids(con: DuckDBPyConnection, vertex: Vertex) -> None:
+def _compute_range_ids(conn_wrapper: ConnectionWrapper, vertex: Vertex) -> None:
     """
     Compute range IDs for inequality predicates in a vertex.
     This function modifies the vertex's predicates by setting their range_id.
@@ -80,7 +82,7 @@ def _compute_range_ids(con: DuckDBPyConnection, vertex: Vertex) -> None:
         LIMIT 1
         """
 
-        res: tuple[int] | None = con.execute(sql).fetchone()
+        res: tuple[int] | None = conn_wrapper.fetchone(sql)
         if res is not None:
             bucket_id = res[0]
             predicate.set_range_id(bucket_id)

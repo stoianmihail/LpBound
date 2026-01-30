@@ -48,7 +48,6 @@ def fetch_statistics_for_query(
   # And return.
   return statistics, domain_size_statistics, jg
 
-
 def _fetch_statistics(
   conn_wrapper: ConnectionWrapper,
   join_graph: JoinGraph,

@@ -63,4 +63,4 @@ def compute_join_pool_domain_sizes(conn_wrapper: ConnectionWrapper, join_graph: 
     """
     pool_ids = set(join_graph.join_pool_map.values())
     for pool_id in pool_ids:
-        compute_join_pool_domain_size(con, join_graph, pool_id, statistics)
+        compute_join_pool_domain_size(conn_wrapper, join_graph, pool_id, statistics)
