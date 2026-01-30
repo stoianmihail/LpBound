@@ -31,12 +31,10 @@ def run_berge_lp_solver(
         print("----> join_pool_alias_map: ", join_graph.join_pool_alias_map)
         print("----> aliases: ", aliases)
 
-    # add constraints
     # Add constraints
     lp_variables, lp_type_mapping, objective = create_additivity_lp_variables(
       solver,
       join_graph,
-      # _jg.has_cross_product,
       verbose = verbose,
     )
 
