@@ -6,7 +6,7 @@ cycler==0.12.1
 debugpy==1.8.13
 decorator==5.2.1
 docstring_parser==0.16
-duckdb==0.10.1
+duckdb==1.4.4
 executing==2.2.0
 fonttools==4.57.0
 immutabledict==4.2.1
