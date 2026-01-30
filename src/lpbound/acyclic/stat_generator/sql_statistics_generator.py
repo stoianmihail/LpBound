@@ -67,7 +67,7 @@ def generate_all_sql_for_benchmark(con: DuckDBPyConnection, lpnorm_config: LpBou
     # We'll still keep 0 in the list if we might do an l0
     # If user doesn't want l0, the aggregator just won't include it in the final SELECT.
     # (But if you prefer to skip p=0 entirely, you can condition here.)
-    p_list = [0] + list(range(lpnorm_config.p_min, lpnorm_config.p_max + 1))
+    p_list = [0] + list(range(lpnorm_config.min_p, lpnorm_config.max_p + 1))
 
     all_cmds: list[SqlCommand] = []
 

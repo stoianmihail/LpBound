@@ -6,6 +6,8 @@ from lpbound.utils.sql_execution import execute_fetchone_sql
 from lpbound.utils.types import DomainSizeStats, Stats
 from lpbound.acyclic.stat_generator.sql_utils import ordered_non_dup_vars
 
+# Connection utils.
+from lpbound.utils.conn_utils import ConnectionWrapper
 
 def _produce_predicate_norms_conditions(vertex: Vertex, join_graph: JoinGraph) -> list[str]:
     """
@@ -92,7 +94,7 @@ def _produce_predicate_norms_sql(vertex: Vertex, join_column: str, max_p: int, j
 
 
 def fetch_predicate_norms(
-    con: DuckDBPyConnection, join_graph: JoinGraph, max_p: int
+    conn_wrapper: ConnectionWrapper, join_graph: JoinGraph, max_p: int
 ) -> dict[tuple[str, str], list[float]]:
     """
     Fetch predicate norms for all join columns.
@@ -103,7 +105,7 @@ def fetch_predicate_norms(
         for join_column in v.join_columns:
             sql = _produce_predicate_norms_sql(v, join_column, max_p, join_graph)
             if sql is not None:
-                norms = execute_fetchone_sql(con, sql)
+                norms = conn_wrapper.fetchone(sql)
                 statistics[(v.alias, join_column)] = norms
     return statistics
 
@@ -138,7 +140,7 @@ def _produce_groupby_domain_sizes_sql(vertex: Vertex, join_graph: JoinGraph) -> 
     return sql
 
 
-def fetch_groupby_domain_sizes(con: DuckDBPyConnection, join_graph: JoinGraph) -> DomainSizeStats:
+def fetch_groupby_domain_sizes(conn_wrapper: ConnectionWrapper, join_graph: JoinGraph) -> DomainSizeStats:
     """
     Fetch groupby domain sizes for all vertices.
     Returns a dictionary mapping [alias] -> domain_size
@@ -148,6 +150,6 @@ def fetch_groupby_domain_sizes(con: DuckDBPyConnection, join_graph: JoinGraph) -
         if len(v.groupby_vars) > 0:
             sql = _produce_groupby_domain_sizes_sql(v, join_graph)
             # print(sql)
-            domain_size: int = execute_fetchone_sql(con, sql)[0]
+            domain_size: int = conn_wrapper.fetchone(sql)[0]
             statistics[v.alias] = domain_size
     return statistics

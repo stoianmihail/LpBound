@@ -21,7 +21,7 @@ def create_norms_table_if_not_exists(cfg: LpBoundConfig) -> SqlCommand:
     col_defs: list[str] = []
     if cfg.include_l0:
         col_defs.append("l0 DOUBLE")
-    for p in range(cfg.p_min, cfg.p_max + 1):
+    for p in range(cfg.min_p, cfg.max_p + 1):
         col_defs.append(f"l{p} DOUBLE")
     if cfg.include_l_inf:
         col_defs.append("l_inf DOUBLE")

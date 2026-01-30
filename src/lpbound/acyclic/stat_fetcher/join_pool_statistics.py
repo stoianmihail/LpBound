@@ -1,10 +1,9 @@
-from duckdb import DuckDBPyConnection
-
 from lpbound.acyclic.join_graph.join_graph import JoinGraph
 from lpbound.acyclic.join_graph.vertex import Vertex
-from lpbound.utils.sql_execution import execute_fetchone_sql
 from lpbound.utils.types import Stats
 
+# Connection utils.
+from lpbound.utils.conn_utils import ConnectionWrapper
 
 def produce_domain_size_sql(vertex: Vertex, join_column: str, is_groupby: bool) -> str:
     """
@@ -23,7 +22,7 @@ def produce_domain_size_sql(vertex: Vertex, join_column: str, is_groupby: bool) 
 
 
 def compute_join_pool_domain_size(
-    con: DuckDBPyConnection, join_graph: JoinGraph, pool_id: int, statistics: Stats
+    conn_wrapper: ConnectionWrapper, join_graph: JoinGraph, pool_id: int, statistics: Stats
 ) -> None:
     """
     Compute domain size for a specific join pool.
@@ -46,7 +45,7 @@ def compute_join_pool_domain_size(
                 continue
 
             sql = produce_domain_size_sql(v, join_column, join_graph.is_groupby)
-            domain_size = execute_fetchone_sql(con, sql)
+            domain_size = conn_wrapper.fetchone(sql)
             assert domain_size is not None and len(domain_size) > 0
             num_distinct_values.append(int(domain_size[0]))
 
@@ -57,7 +56,7 @@ def compute_join_pool_domain_size(
     join_graph.join_pool_domain_size[pool_id] = min_value
 
 
-def compute_join_pool_domain_sizes(con: DuckDBPyConnection, join_graph: JoinGraph, statistics: Stats) -> None:
+def compute_join_pool_domain_sizes(conn_wrapper: ConnectionWrapper, join_graph: JoinGraph, statistics: Stats) -> None:
     """
     Compute domain sizes for all join pools.
     This function modifies join_graph.join_pool_domain_size.

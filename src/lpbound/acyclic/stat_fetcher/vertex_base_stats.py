@@ -1,9 +1,8 @@
-from duckdb import DuckDBPyConnection
-
 from lpbound.acyclic.join_graph.join_graph import JoinGraph
 from lpbound.acyclic.join_graph.vertex import Vertex
-from lpbound.utils.sql_execution import execute_fetchone_sql
 
+# Connection utils.
+from lpbound.utils.conn_utils import ConnectionWrapper
 
 def _produce_base_norms_sql(vertex: Vertex, join_column: str, prefix_value: int, max_p: int, is_groupby: bool) -> str:
     """
@@ -29,7 +28,7 @@ def _produce_base_norms_sql(vertex: Vertex, join_column: str, prefix_value: int,
 
 
 def fetch_base_norms(
-    con: DuckDBPyConnection, join_graph: JoinGraph, statistics: dict[tuple[str, str], list[float]], max_p: int
+    conn_wrapper: ConnectionWrapper, join_graph: JoinGraph, statistics: dict[tuple[str, str], list[float]], max_p: int
 ) -> dict[tuple[str, str], list[float]]:
     """
     Fetch base norms for all join columns.
@@ -42,7 +41,7 @@ def fetch_base_norms(
 
             sql = _produce_base_norms_sql(v, join_column, prefix_value, max_p, join_graph.is_groupby)
             # print(sql)
-            norms = execute_fetchone_sql(con, sql)
+            norms = conn_wrapper.fetchone(sql)
             assert norms is not None and len(norms) > 0
 
             # Take the MIN of these norms and existing norms

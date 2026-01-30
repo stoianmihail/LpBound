@@ -31,11 +31,11 @@ class LpBoundPaths:
 
     # Used for duckdb to find the database name
     WORKLOAD_TO_DB_MAP: dict[str, str] = {
-        "jobjoin": "imdb",
-        "joblight": "joblight",
-        "jobrange": "jobrange",
-        "stats": "stats",
-        "subgraph_matching": "subgraph_matching",
+      'job': 'imdb::job',
+      'joblight': 'imdb::joblight',
+      'jobjoin': 'imdb::jobjoin',
+      'jobrange': 'imdb::jobrange',
+      'stats_ceb': 'stats::stats_ceb',
     }
 
     GROUPBY_DB_NAME_DICT: dict[str, str] = {
