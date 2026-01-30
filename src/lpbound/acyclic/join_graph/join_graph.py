@@ -66,6 +66,9 @@ class JoinGraph:
         # pool_id -> domain size/l0-norm
         self.join_pool_domain_size: dict[int, int] = {}
 
+    def size(self):
+        return len(self.vertices)
+
     def add_vertex(self, v: Vertex):
         self.vertices[v.alias] = v
 
