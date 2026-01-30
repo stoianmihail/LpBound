@@ -6,10 +6,11 @@ from lpbound.solver.additivity_lp_variables import create_additivity_lp_variable
 from lpbound.solver.statistics_inequalities import add_domain_size_inequalities, add_statistics_inequalities
 from lpbound.utils.types import DomainSizeStats, Stats, AliasColPair
 
+# Query utils.
+from lpbound.acyclic.join_graph.join_graph import JoinGraph
 
 def run_berge_lp_solver(
-    join_pool_map: dict[AliasColPair, int],
-    join_pool_alias_map: dict[str, list[int]],
+    join_graph: JoinGraph,
     aliases: list[str],
     statistics_dict: Stats,
     domain_size_statistics: DomainSizeStats,
@@ -26,27 +27,26 @@ def run_berge_lp_solver(
 
     if verbose:
         print("\n\n")
-        print("----> join_pool_map: ", join_pool_map)
-        print("----> join_pool_alias_map: ", join_pool_alias_map)
+        print("----> join_pool_map: ", join_graph.join_pool_map)
+        print("----> join_pool_alias_map: ", join_graph.join_pool_alias_map)
         print("----> aliases: ", aliases)
 
     # add constraints
-    lp_variables, objective_entropy = create_additivity_lp_variables(
-        solver,
-        join_pool_map,
-        join_pool_alias_map,
-        aliases,
-        verbose=verbose,
+    # Add constraints
+    lp_variables, lp_type_mapping, objective = create_additivity_lp_variables(
+      solver,
+      join_graph,
+      # _jg.has_cross_product,
+      verbose = verbose,
     )
 
-    # add statistics inequalities
+    # Add statistics inequalities
     add_statistics_inequalities(
-        solver,
-        lp_variables,
-        statistics_dict,
-        join_pool_map,
-        join_pool_alias_map,
-        verbose=verbose,
+      solver,
+      lp_variables,
+      statistics_dict,
+      join_graph,
+      verbose=verbose,
     )
 
     if domain_size_statistics:
@@ -63,7 +63,7 @@ def run_berge_lp_solver(
             print(f"{constraint.name()}: {constraint.ub()}")
 
         print("----> objective entropy: ")
-        print_objective(objective_entropy, lp_variables)
+        print_objective(objective, lp_variables)
 
     if dump_lp_program_file:
         with open(dump_lp_program_file, "w") as f:
