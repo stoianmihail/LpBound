@@ -1,6 +1,9 @@
 # macOS
 .DS_Store
 
+dbs/
+dump/
+
 # Data
 data/datasets/imdb
 data/datasets/imdb_processed

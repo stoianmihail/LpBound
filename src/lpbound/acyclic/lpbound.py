@@ -8,6 +8,11 @@ from lpbound.acyclic.stat_fetcher.main import fetch_statistics_for_query
 from lpbound.acyclic.stat_generator.main import create_lpbound_statistics
 from lpbound.solver.main import run_solver
 
+# Schema utils.
+from lpbound.config.benchmark_schema import BenchmarkSchema
+
+# Connection utils.
+from lpbound.utils.conn_utils import ConnectionWrapper
 
 def _add_count_to_distinct(sql_query: str) -> str:
     # Regular expression to match SELECT DISTINCT(...) pattern
@@ -25,6 +30,8 @@ def _add_count_to_distinct(sql_query: str) -> str:
 
 
 def estimate(
+    conn_wrapper: ConnectionWrapper,
+    schema_data: BenchmarkSchema,
     input_query_sql: str,
     config: LpBoundConfig,
     dump_lp_program_file: str | None = None,
@@ -42,7 +49,12 @@ def estimate(
     #     # replace the DISTINCT(...) with COUNT(DISTINCT(...))
     #     query_sql = _add_count_to_distinct(query_sql)
 
-    statistics, domain_size_statistics, jg = fetch_statistics_for_query(query_sql, config)
+    statistics, domain_size_statistics, jg = fetch_statistics_for_query(
+        conn_wrapper,
+        schema_data,
+        query_sql,
+        config
+    )
 
     method = "base" if jg.is_groupby else "berge"
     estimation, _ = run_solver(
