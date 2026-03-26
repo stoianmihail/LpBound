@@ -2,6 +2,7 @@ from __future__ import annotations
 from pathlib import Path
 import sys
 
+
 class LpBoundPaths:
 
     # Base paths
@@ -27,15 +28,17 @@ class LpBoundPaths:
         "jobrange": "imdb",
         "stats": "stats",
         "subgraph_matching": "dblp",
+        "einsum": "einsum",
     }
 
     # Used for duckdb to find the database name
     WORKLOAD_TO_DB_MAP: dict[str, str] = {
-      'job': 'imdb::job',
-      'joblight': 'imdb::joblight',
-      'jobjoin': 'imdb::jobjoin',
-      'jobrange': 'imdb::jobrange',
-      'stats_ceb': 'stats::stats_ceb',
+        "job": "imdb::job",
+        "joblight": "imdb::joblight",
+        "jobjoin": "imdb::jobjoin",
+        "jobrange": "imdb::jobrange",
+        "stats_ceb": "stats::stats_ceb",
+        "einsum": "einsum::einsum",
     }
 
     GROUPBY_DB_NAME_DICT: dict[str, str] = {

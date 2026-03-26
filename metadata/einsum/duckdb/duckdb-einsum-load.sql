@@ -1,0 +1,2 @@
+copy matrix_a from './data/datasets/einsum/matrix_a_coo.csv' delimiter ',' CSV NULL '' QUOTE '"' ESCAPE '\';
+copy matrix_b from './data/datasets/einsum/matrix_b_coo.csv' delimiter ',' CSV NULL '' QUOTE '"' ESCAPE '\';

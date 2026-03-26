@@ -1,0 +1,44 @@
+{
+  "name": "einsum",
+  "relations": {
+    "MATRIX_A": {
+      "ROW_IDX": "int",
+      "COL_IDX": "int",
+      "VALUE": "double"
+    },
+    "MATRIX_B": {
+      "ROW_IDX": "int",
+      "COL_IDX": "int",
+      "VALUE": "double"
+    }
+  },
+  "join_variables": {
+    "MATRIX_A": [
+      "COL_IDX"
+    ],
+    "MATRIX_B": [
+      "ROW_IDX"
+    ]
+  },
+  "groupby_variables": {
+    "MATRIX_A": [
+      [
+        "*"
+      ],
+      [
+        "ROW_IDX"
+      ]
+    ],
+    "MATRIX_B": [
+      [
+        "*"
+      ],
+      [
+        "COL_IDX"
+      ]
+    ]
+  },
+  "equality_predicate_variables": {},
+  "range_predicate_variables": {},
+  "fk_pk_joins_dict": {}
+}
