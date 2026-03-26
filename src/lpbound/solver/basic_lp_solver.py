@@ -1,3 +1,4 @@
+from lpbound.acyclic.join_graph.join_graph import JoinGraph
 import numpy as np
 from ortools.linear_solver import pywraplp
 
@@ -15,8 +16,7 @@ from lpbound.utils.types import DomainSizeStats, Stats, AliasColPair
 
 
 def run_base_lp_solver(
-    join_pool_map: dict[AliasColPair, int],
-    join_pool_alias_map: dict[str, list[int]],
+    join_graph: JoinGraph,
     aliases: list[str],
     statistics_dict: Stats,
     domain_size_statistics: DomainSizeStats,
@@ -28,11 +28,13 @@ def run_base_lp_solver(
     solver = pywraplp.Solver.CreateSolver("GLOP")
 
     # add constraints
-    lp_variables, objective_entropy, entropy_variables_combinations = create_and_get_lp_variables(
-        solver,
-        set(join_pool_map.values()),
-        aliases,
-        verbose=False,
+    lp_variables, objective_entropy, entropy_variables_combinations = (
+        create_and_get_lp_variables(
+            solver,
+            set(join_graph.join_pool_map.values()),
+            aliases,
+            verbose=False,
+        )
     )
 
     add_basic_shannon_monotonicity_inequalities(
@@ -53,8 +55,8 @@ def run_base_lp_solver(
         solver,
         lp_variables,
         statistics_dict,
-        join_pool_map,
-        join_pool_alias_map,
+        join_graph,
+        # join_pool_alias_map,
         verbose=verbose,
     )
 

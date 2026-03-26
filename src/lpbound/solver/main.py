@@ -31,8 +31,7 @@ def run_solver(
         )
     elif method == "base":
         return run_base_lp_solver(
-            join_pool_map,
-            join_pool_alias_map,
+            join_graph,
             aliases,
             statistics_dict,
             domain_size_statistics,

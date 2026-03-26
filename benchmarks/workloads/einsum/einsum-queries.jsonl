@@ -1,0 +1,1 @@
+{"tag": "1", "config": ["A", "B"], "sql": "SELECT DISTINCT(A.row_idx, B.col_idx) FROM matrix_a AS A, matrix_b AS B WHERE A.col_idx = B.row_idx;", "act": 715, "query-time [ms]": 29.445908}
